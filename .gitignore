@@ -4,8 +4,10 @@ __pycache__/
 *$py.class
 
 #  my data
-data/**
-except/**
+data/
+except/
+tmp/
+*.bat
 
 
 

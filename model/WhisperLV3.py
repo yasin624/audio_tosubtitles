@@ -1,4 +1,5 @@
 import re,time
+import io
 
 import torch
 from tqdm import tqdm
@@ -37,6 +38,7 @@ class WhisperLargeV3():
         self.no_speech_threshold         = env.NO_SPEECH_THRESHOLD
         self.return_timestamps           = env.RETURN_TİMESTAMPS           # Zaman damgalarını tahmin etmesini sağlar [2]
         self.language                    = env.LANGUAGE
+        self.chunk_length                = env.CHUNK_LENGTH  
         
         self.model,self.processor=self.Load_model()
 
@@ -57,10 +59,18 @@ class WhisperLargeV3():
 
         return model,processor
 
-    def Load_data(self,audio_path, sr=16000):
+
+    def Load_file(self,audio_path, sr=16000):
         # Not: Ses dosyasını yüklemek için kaynaklarda belirtilmeyen 'librosa' gibi 
         # harici bir kütüphane kullanmanız gerekebilir (Bu bilgi kaynak dışıdır).
         speech, sr = librosa.load(audio_path, sr=sr) # Whisper 16kHz ile çalışır
+
+        return speech, sr
+
+    def Load_data(self,audio_bytes_data, sr=16000):
+        # Not: Ses dosyasını yüklemek için kaynaklarda belirtilmeyen 'librosa' gibi 
+        # harici bir kütüphane kullanmanız gerekebilir (Bu bilgi kaynak dışıdır).
+        speech, sr = librosa.load(io.BytesIO(audio_bytes_data),sr=sr) # Whisper 16kHz ile çalışır
 
         return speech, sr
 
@@ -69,11 +79,11 @@ class WhisperLargeV3():
 
         del extra_params
             
-    def preadiction(self,speech,sr=16000,chunk_length = env.CHUNK_LENGTH):
+    def preadiction(self,speech,sr=16000):
 
 
         
-        samples_per_chunk = chunk_length * sr
+        samples_per_chunk = self.chunk_length * sr
         total_chunks = (len(speech) // samples_per_chunk) + 1
         
         #print(f"Toplam {total_chunks} parça işlenecek...")

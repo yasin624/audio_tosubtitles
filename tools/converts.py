@@ -7,7 +7,7 @@ def format_timestamp(seconds):
     milliseconds = int((td % 1) * 1000)
     return f"{hours:02}:{minutes:02}:{secs:02},{milliseconds:03}"
 
-def data_to_srt(data, output_file="seeyou.srt"):
+def data_to_srt(data, output_file="tmp/tmp.srt"):
     with open(output_file, "w", encoding="utf-8") as f:
         for i, entry in enumerate(data, 1):
             start, end = entry['timestamp']
@@ -17,6 +17,8 @@ def data_to_srt(data, output_file="seeyou.srt"):
             f.write(f"{i}\n")
             f.write(f"{format_timestamp(start)} --> {format_timestamp(end)}\n")
             f.write(f"{entry['text'].strip()}\n\n")
+
+    return output_file
 
 
 def format_vtt_timestamp(seconds):
@@ -29,7 +31,7 @@ def format_vtt_timestamp(seconds):
     # VTT formatında milisaniyeler nokta (.) ile ayrılır
     return f"{hours:02}:{minutes:02}:{secs:02}.{milliseconds:03}"
 
-def data_to_vtt(data, output_file="seeyou.vtt"):
+def data_to_vtt(data, output_file="tmp/tmp.srt"):
     # "w" kullanın, "wb" değil
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("WEBVTT\n\n")  # VTT dosya başlığı zorunludur
@@ -42,3 +44,4 @@ def data_to_vtt(data, output_file="seeyou.vtt"):
             
             f.write(f"{format_vtt_timestamp(start)} --> {format_vtt_timestamp(end)}\n")
             f.write(f"{entry['text'].strip()}\n\n")
+    return output_file
