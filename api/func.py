@@ -52,3 +52,6 @@ def format_converter (data,request_variables):
         return data_to_srt(data)
 
         
+def save_data(file_path, data,write_type="wb"):
+    with open(file_path,write_type) as file:
+        file.write(data)

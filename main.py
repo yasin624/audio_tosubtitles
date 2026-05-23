@@ -7,7 +7,7 @@ from transformers import AutoProcessor, pipeline
 
 from model import WhisperLargeV3
 from tools import data_to_srt
-from api import variable_controls,format_converter
+from api import variable_controls,format_converter,save_data
 ######################################  import AI Model
 WhisperModel=WhisperLargeV3()
 
@@ -41,7 +41,6 @@ def process_audio():
 
     subtitle_path=format_converter(result,request.form)
     print(subtitle_path)
-    
     return send_file(subtitle_path, as_attachment=True)
 
 if __name__ == '__main__':

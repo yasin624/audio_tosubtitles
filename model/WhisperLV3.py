@@ -49,6 +49,23 @@ class WhisperLargeV3():
                              "text":(m[1].strip())} for m in matches]
 
         return formatted_output
+
+    def remove_duplicates(self,data):
+        end_element=""
+        for s,element in tqdm(enumerate(data)):
+            if end_element and element["text"].replace(" ","").lower() == end_element["text"].replace(" ","").lower():
+                try:
+                    data.remove(element)
+                    data.remove(end_element)
+                except:
+                pass
+                element["timestamp"]=(end_element["timestamp"][0],element["timestamp"][1])
+                data.insert(s-1,element)
+            else:
+                end_element=element
+        
+        return data
+    
     def Load_model(self):
         # 1. Model ve Processor'ı Doğrudan Yükleme [1]
         model = AutoModelForSpeechSeq2Seq.from_pretrained(
@@ -128,5 +145,5 @@ class WhisperLargeV3():
         
             
 
-        
-        return result
+            
+        return self.remove_duplicates(result)
